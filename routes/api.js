@@ -23,6 +23,13 @@ exports.entries = (req, res, next) => {
     const page = req.page;
     Entry.getRange(page.from, page.to, (err, entries) => {
         if(err) return next(err);
-        res.json(entries);
+        res.format({
+            json: () => { //short-hand for 'application/json': () => {
+                res.json(entries);
+            },
+            xml: () => { //short-hand for 'application/xml': () =>
+                res.render('entries/xml', { entries: entries});
+            }
+        });
     });
 };

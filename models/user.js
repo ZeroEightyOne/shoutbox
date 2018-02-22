@@ -35,8 +35,6 @@ class User {
             });
         });
     }
-
-
     save(callback) {
         if(this.id) {
             this.update(callback);
@@ -71,17 +69,12 @@ class User {
             });
         });
     }
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name
+        };
+    }
 }
 
 module.exports = User;
-
-//const TestUser = require('./models/user');
-const user = new User({ name: 'Example', pass: 'test'});
-user.save((err) => {
-    if(err) console.error(err);
-    console.log(`user id ${user.id}`);
-});
-
-User.getByName('Example', (err, user) => {
-    console.log(user);
-})

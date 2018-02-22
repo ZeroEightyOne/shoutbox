@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -12,12 +14,20 @@ const session = require('express-session');
 const entries = require('./routes/entries');
 const register = require('./routes/register');
 const login = require('./routes/login');
+const api = require('./routes/api');
+
 //
 // Middleware
 //
 const validate = require('./middleware/validate');
 const messages = require('./middleware/messages');
 const user = require('./middleware/user');
+const page = require('./middleware/page');
+
+//
+// Model
+//
+const Entry = require('./models/entry');
 
 var app = express();
 
@@ -49,9 +59,11 @@ app.use(session({secret: 'secret', resave: false, saveUnitialized: true})); //pl
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(messages); //Now can access messages and removeMessages from any template
+app.use('/api',api.auth); //forces auth middleware to be called with every call prefixed by /api
 app.use(user); //Now every res.locals and req will have a populated user object if subscriber is authenticated
 
 
+//Direct calls
 
 app.get('/', entries.list);
 app.get('/post',entries.form);
@@ -61,6 +73,13 @@ app.post('/register',register.submit);
 app.get('/login',login.form);
 app.post('/login',login.submit);
 app.get('/logout',login.logout);
+
+
+//API calls
+
+app.get('/api/user/:id', api.user);
+app.get('/api/entries/:page?', page(Entry.count), api.entries);
+app.post('/api/entry',entries.submit);
 
 
 // catch 404 and forward to error handler

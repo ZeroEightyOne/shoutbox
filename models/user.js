@@ -63,6 +63,7 @@ class User {
     hashPassword(callback) {
         bcrypt.genSalt(12, (err,salt) => {
             if (err) return callback(err);
+            this.salt = salt;
             bcrypt.hash(this.pass, salt, (err,hash) => {
                 if (err) return callback(err);
                 this.pass = hash;

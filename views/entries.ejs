@@ -6,6 +6,9 @@
     </head>
     <body>
         <% include menu %>
+        <% if (locals.user) { %>
+        <h1>Here are your results <%= user.name %></h1><br>
+        <% } %>
         <% entries.forEach((entry) => { %>
             <div class="entry">
                 <h3>Title: <%= entry.title %></h3>
